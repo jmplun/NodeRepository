@@ -1,0 +1,10 @@
+extends layout
+
+block content
+  h1= title
+
+  form#formUploadImage(name="addimage",method="post",action="/addimage")
+
+        input#inputImageName(type="text", placeholder="imagename", name="imagename")
+        input#inputImage(type="file", placeholder="userimage", name="userimage")
+        button#btnSubmit(type="submit") submit
