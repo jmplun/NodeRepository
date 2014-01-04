@@ -65,16 +65,11 @@ exports.addimage = function(db,targetPath) {
 	   var formidable = require('formidable');
 	   var fs = require('fs-extra');
 	   var util = require('util');
-	   console.log(targetPath);
 
 	return function(req,res) {
-		
-		var tmpText = "Successfully Called upload Image man"
-		tmpText = tmpText + " test Append"
 		//console.log(req);
 		var form = new formidable.IncomingForm();
 		form.parse(req,function(err,fields,files){
-
 			console.log(util.inspect({fields: fields,files: files}));
 		});
 
@@ -84,43 +79,43 @@ exports.addimage = function(db,targetPath) {
 
 		   /* file name of uploaded file */
 		   var fileName = this.openedFiles[0].name;
+		   // insert into 
+		   var recordId;
+
+		    var collection = db.get('imagecollection');
+
+		    collection.insert({
+		    	"imagename" : fileName,
+		    	"imagepath" : targetPath + fileName
+		    }),function (err,doc){
+		    	if (err){
+		    		res.send("There was a problem adding information to the database");
+		    	} else
+		    	{
+				console.log('success loaded');
+				recordId =collection.id();
+				res.send(doc);
+				console.log(doc);
+				console.log (recordId );
+
+		    	}
+		    }
+		    console.log('inserted' + collection.id());
+
+			
 		   // location to where we want to copy the file
 		   fs.copy(tempPath,targetPath + fileName,function(err){
 		      if (err) {
 		      	console.error(err);
 		      } else {
 		      	console.log("success!");
+		      	res.location("imageupload");
+		      	res.redirect("imageupload");
 		      };
 
 		   });
 
 		});
-//		 req.body.imagename;
-//		var targetPath = '/uploads/' + req.body.userimage;
-//		res.send(tmpText + tmpPath + " " + targetPath);
+
 	};
 }
-/*	var fs = require('fs');
-
-	return function(req, res){
-		var tmpPath = req.files.userimage.path;
-		var targetPath = '/uploads/' + req.files.userimage.name;
-
-		fs.rename(tmpPath,targetPath,function(err){
-			if (err) throw err;
-
-			//delete temporary file 
-			fs.unlink(tmpPath,function(){
-				if (err) throw err;
-
-
-			});
-
-
-		});
-
-
-	};
-
-};
-*/
