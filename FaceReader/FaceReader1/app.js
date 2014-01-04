@@ -16,6 +16,8 @@ var express = require('express')
 var mongo = require('mongodb');
 var monk = require('monk');
 var db = monk(config.database.host);
+var targetPath = config.location.imageFolder;
+
 
 var app = express();
 
@@ -48,7 +50,7 @@ app.get('/newuser',routes.newuser);
 app.get('/imageupload',routes.imageupload);
 
 app.post('/adduser',routes.adduser(db));
-app.post('/addimage',routes.addimage(db));
+app.post('/addimage',routes.addimage(db,targetPath));
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));

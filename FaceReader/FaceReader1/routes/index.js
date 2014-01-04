@@ -60,15 +60,44 @@ exports.imageupload = function(req,res){
 	res.render('imageupload', {title: 'Upload New Image'});
 };
 
-exports.addimage = function(db) {
+exports.addimage = function(db,targetPath) {
+
+	   var formidable = require('formidable');
+	   var fs = require('fs-extra');
+	   var util = require('util');
+	   console.log(targetPath);
+
 	return function(req,res) {
-		var fs = require('fs');
+		
 		var tmpText = "Successfully Called upload Image man"
 		tmpText = tmpText + " test Append"
-		console.log(req);
-		var tmpPath = req.body.imagename;
-		var targetPath = '/uploads/' + req.body.userimage.path;
-		res.send(tmpText + tmpPath + " " + targetPath);
+		//console.log(req);
+		var form = new formidable.IncomingForm();
+		form.parse(req,function(err,fields,files){
+
+			console.log(util.inspect({fields: fields,files: files}));
+		});
+
+		form.on('end',function(fields,files){
+			/* temoporary location of uploaded file */
+		   var tempPath = this.openedFiles[0].path;
+
+		   /* file name of uploaded file */
+		   var fileName = this.openedFiles[0].name;
+		   // location to where we want to copy the file
+		   fs.copy(tempPath,targetPath + fileName,function(err){
+		      if (err) {
+		      	console.error(err);
+		      } else {
+		      	console.log("success!");
+		      };
+
+		   });
+
+		});
+//		 req.body.imagename;
+//		var targetPath = '/uploads/' + req.body.userimage;
+//		res.send(tmpText + tmpPath + " " + targetPath);
 	};
 }
 /*	var fs = require('fs');
