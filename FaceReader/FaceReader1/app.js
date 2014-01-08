@@ -45,9 +45,11 @@ app.get('/users', user.list);
 app.get('/helloworld',routes.helloworld);
 app.get('/userlist',routes.userlist(db));
 app.get('/newuser',routes.newuser);
+app.get('/uploads/thumbs/:files',routes.displayImages(targetPath + config.location.thumbPath));
 
 // image posting and processing
 app.get('/imageupload',routes.imageupload);
+app.get('/imagelist',routes.imagelist(db));
 
 app.post('/adduser',routes.adduser(db));
 app.post('/addimage',routes.addimage(db,targetPath));

@@ -1,0 +1,10 @@
+extends layout
+
+block content
+  h1.
+    Image List
+  
+  ul
+    each image in imagelist
+      li
+         img(src='/uploads/thumbs/c31052eb-2248-4ad6-b138-237a0797c946.jpg' ,alt=image.imagename, width=200, height=200)

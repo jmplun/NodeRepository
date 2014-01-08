@@ -26,6 +26,21 @@ exports.newuser = function(req, res){
 	res.render('newuser', { title: 'Add New User'});
 };
 
+exports.displayImages = function(imgPath){
+   return function(req,res){
+	   var url = require('url');
+	   var fs = require('fs-extra');
+	   var file = req.params.files;
+
+	   //c31052eb-2248-4ad6-b138-237a0797c946.jpg
+	   //var imgPath ='/Users/jarradplunkett/documents/development/node_1/noderepository/FaceReader/FaceReader1/uploads//thumbs/';
+	   var imgPathFinal = imgPath + file;
+	   var img = fs.readFileSync(imgPathFinal);
+	   res.writeHead(200, {'Content-Type': 'image/gif' });
+	   res.end(img, 'binary');
+	};
+};
+
 
 exports.adduser = function(db){
 	return function(req,res) {
@@ -57,14 +72,29 @@ exports.adduser = function(db){
 
 
 exports.imageupload = function(req,res){
-	res.render('imageupload', {title: 'Upload New Image'});
+	res.render('imageupload', {title: 'Upload New Image' });
 };
+
+exports.imagelist = function(db) {
+	return function(req,res){
+		var collection = db.get("imagecollection");
+		collection.find({},{},function(e,docs){
+			res.render('imagelist', {
+				"imagelist" : docs
+			});
+		});
+
+	}
+}
 
 exports.addimage = function(db,targetPath) {
 
 	   var formidable = require('formidable');
 	   var fs = require('fs-extra');
 	   var util = require('util');
+
+	   var uuid = require('node-uuid');
+	   var uniqueFileName = uuid.v4();
 
 	return function(req,res) {
 		//console.log(req);
@@ -79,32 +109,51 @@ exports.addimage = function(db,targetPath) {
 
 		   /* file name of uploaded file */
 		   var fileName = this.openedFiles[0].name;
-		   // insert into 
-		   var recordId;
+
 
 		    var collection = db.get('imagecollection');
+		    var path = require('path');
+            var newFileName = uniqueFileName + path.extname(fileName);
+            var tmpThumbs = targetPath + "/thumbs/" + newFileName;
 
 		    collection.insert({
 		    	"imagename" : fileName,
-		    	"imagepath" : targetPath + fileName
+		    	"uniquefilename" : newFileName,
+		    	"imagepath" : targetPath + newFileName,
+		    	"thumbspath" : tmpThumbs
 		    }),function (err,doc){
+
 		    	if (err){
 		    		res.send("There was a problem adding information to the database");
 		    	} else
 		    	{
-				console.log('success loaded');
-				recordId =collection.id();
-				res.send(doc);
-				console.log(doc);
-				console.log (recordId );
+				
 
 		    	}
 		    }
-		    console.log('inserted' + collection.id());
 
 			
 		   // location to where we want to copy the file
-		   fs.copy(tempPath,targetPath + fileName,function(err){
+		   fs.copy(tempPath,targetPath + newFileName,function(err){
+		    	// write file to thumbnnails file and reise
+		   	 var easyImg = require("easyimage");
+		   	 easyImg.resize( 
+		   	 {
+		   	 	src:targetPath + newFileName,
+		   	 	dst:tmpThumbs,
+		   	 	width:200,
+		   	 	height:200
+		   	 },
+		   	 function(err,image) {
+		   	 	if (err) {
+		   	 		console.log(err);
+		   	 	}
+
+		   	 }
+
+		   	 	);
+
+
 		      if (err) {
 		      	console.error(err);
 		      } else {

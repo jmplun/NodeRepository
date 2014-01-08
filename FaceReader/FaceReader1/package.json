@@ -11,6 +11,8 @@
     "mongodb": "*",
     "monk": "*",
     "response": "*",
-    "fs-extra": "*"
+    "fs-extra": "*",
+    "node-uuid": "*",
+    "easyimage": "*"
   }
 }
