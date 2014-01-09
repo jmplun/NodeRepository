@@ -100,7 +100,7 @@ exports.addimage = function(db,targetPath) {
 		//console.log(req);
 		var form = new formidable.IncomingForm();
 		form.parse(req,function(err,fields,files){
-			console.log(util.inspect({fields: fields,files: files}));
+			//console.log(util.inspect({fields: fields,files: files}));
 		});
 
 		form.on('end',function(fields,files){
@@ -120,7 +120,8 @@ exports.addimage = function(db,targetPath) {
 		    	"imagename" : fileName,
 		    	"uniquefilename" : newFileName,
 		    	"imagepath" : targetPath + newFileName,
-		    	"thumbspath" : tmpThumbs
+		    	"thumbspath" : tmpThumbs,
+		    	"thumbsrelpath" : "/uploads/thumbs/" + newFileName
 		    }),function (err,doc){
 
 		    	if (err){
