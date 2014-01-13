@@ -13,6 +13,7 @@
     "response": "*",
     "fs-extra": "*",
     "node-uuid": "*",
-    "easyimage": "*"
+    "easyimage": "*",
+    "request": "*"
   }
 }

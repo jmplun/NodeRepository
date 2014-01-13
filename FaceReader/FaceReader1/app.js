@@ -50,10 +50,25 @@ app.get('/uploads/thumbs/:files',routes.displayImages(targetPath + config.locati
 // image posting and processing
 app.get('/imageupload',routes.imageupload);
 app.get('/imagelist',routes.imagelist(db));
+app.get('/processImage/:image', routes.processImage(db,config));
 
 app.post('/adduser',routes.adduser(db));
 app.post('/addimage',routes.addimage(db,targetPath));
 
+// default route
+app.get('*', function(req, res){
+  res.send(404);
+});
+
+// set up error handlng
+app.use(logErrors);
+
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
 });
+
+
+function logErrors(err, req, res, next) {
+  console.error('logErrors', err.toString());
+  next(err);
+}

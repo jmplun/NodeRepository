@@ -26,22 +26,6 @@ exports.newuser = function(req, res){
 	res.render('newuser', { title: 'Add New User'});
 };
 
-exports.displayImages = function(imgPath){
-   return function(req,res){
-	   var url = require('url');
-	   var fs = require('fs-extra');
-	   var file = req.params.files;
-
-	   //c31052eb-2248-4ad6-b138-237a0797c946.jpg
-	   //var imgPath ='/Users/jarradplunkett/documents/development/node_1/noderepository/FaceReader/FaceReader1/uploads//thumbs/';
-	   var imgPathFinal = imgPath + file;
-	   var img = fs.readFileSync(imgPathFinal);
-	   res.writeHead(200, {'Content-Type': 'image/gif' });
-	   res.end(img, 'binary');
-	};
-};
-
-
 exports.adduser = function(db){
 	return function(req,res) {
 		//get form values. 
@@ -70,6 +54,22 @@ exports.adduser = function(db){
 	};
 };
 
+exports.displayImages = function(imgPath){
+   return function(req,res){
+	   var url = require('url');
+	   var fs = require('fs-extra');
+	   var file = req.params.files;
+
+	   //c31052eb-2248-4ad6-b138-237a0797c946.jpg
+	   //var imgPath ='/Users/jarradplunkett/documents/development/node_1/noderepository/FaceReader/FaceReader1/uploads//thumbs/';
+	   var imgPathFinal = imgPath + file;
+	   var img = fs.readFileSync(imgPathFinal);
+	   res.writeHead(200, {'Content-Type': 'image/gif' });
+	   res.end(img, 'binary');
+	};
+};
+
+
 
 exports.imageupload = function(req,res){
 	res.render('imageupload', {title: 'Upload New Image' });
@@ -86,6 +86,64 @@ exports.imagelist = function(db) {
 
 	}
 }
+
+
+exports.processImage = function(db, config){
+   
+   var request = require('request');
+   var images = db.get("imagecollection");
+   var fs = require('fs-extra');
+  
+   
+  /*
+   request.post(
+    config.rekognition.hosturl,
+    { form: { key: 'value' } },
+    function (error, response, body) {
+        if (!error && response.statusCode == 200) {
+            console.log(body);
+        }
+    }
+);
+*/
+
+   return function(req,res){
+      console.log(config);
+
+      var imgName = req.params.image;
+      console.log(imgName);
+
+       images.find({ uniquefilename: imgName }).on('success', function (docs) {
+       	
+       	//console.log(docs.length);
+       	//console.log(docs[0].thumbspath);
+       	var img = fs.readFileSync(docs[0].thumbspath);
+       	buff =new Buffer(img).toString('base64');
+
+       var request = require("Request");
+       request.post (
+    		config.rekognition.hosturl ,
+    		{ form: { api_key : config.rekognition.api_key,
+              api_secret : config.rekognition.api_secret,
+              jobs:'face_part_emotion',
+              base64: buff} },
+    			function (error, response, body) {
+		        if (!error && response.statusCode == 200) {
+		            console.log(body);
+		        }
+
+    }
+);
+
+
+          res.render("processImage" , {config : config , cust : "My String"});
+
+   });
+
+      //res.send("Processing Image");
+   };
+
+};
 
 exports.addimage = function(db,targetPath) {
 
@@ -156,7 +214,7 @@ exports.addimage = function(db,targetPath) {
 
 
 		      if (err) {
-		      	console.error(err);
+		      	console.log(err);
 		      } else {
 		      	console.log("success!");
 		      	res.location("imageupload");
@@ -169,3 +227,4 @@ exports.addimage = function(db,targetPath) {
 
 	};
 }
+
