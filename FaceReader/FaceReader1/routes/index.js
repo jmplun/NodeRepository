@@ -152,7 +152,7 @@ exports.addimage = function(db,targetPath) {
 	   var util = require('util');
 
 	   var uuid = require('node-uuid');
-	   var uniqueFileName = uuid.v4();
+	   
 
 	return function(req,res) {
 		//console.log(req);
@@ -164,6 +164,7 @@ exports.addimage = function(db,targetPath) {
 		form.on('end',function(fields,files){
 			/* temoporary location of uploaded file */
 		   var tempPath = this.openedFiles[0].path;
+		   var uniqueFileName = uuid.v4();
 
 		   /* file name of uploaded file */
 		   var fileName = this.openedFiles[0].name;
