@@ -1,0 +1,21 @@
+{
+  "name": "test",
+  "version": "0.0.0",
+  "homepage": "https://github.com/jmplun/NodeRepository",
+  "authors": [
+    "Jarrad Plunkett <jmplun@gmail.com>"
+  ],
+  "description": "authenticated app",
+  "main": "public/compoents",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "3.0.3"
+  }
+}

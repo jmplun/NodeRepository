@@ -1,0 +1,22 @@
+{
+  "name": "FaceReader1",
+  "version": "1.0.0",
+  "homepage": "https://github.com/jmplun/NodeRepository",
+  "authors": [
+    "Jarrad Plunkett <jmplun@gmail.com>"
+  ],
+  "description": "Bower Package to build single page for viewing and analsying",
+  "main": "public/bower_components",
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap" : "3.0.3"
+  }
+}

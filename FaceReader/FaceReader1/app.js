@@ -34,6 +34,7 @@ app.use(express.session());
 app.use(app.router);
 //app.use(express.bodyParser());
 app.use(express.static(path.join(__dirname, 'public')));
+console.log(path.join(__dirname,'public'));
 
 // development only
 if ('development' == app.get('env')) {
